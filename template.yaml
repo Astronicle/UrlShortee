@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+
+  UrlTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UrlTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: shortId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: shortId
+          KeyType: HASH
+
+  CreateUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      CodeUri: src/create_url/
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: UrlTable
+      Environment:
+        Variables:
+          TABLE_NAME: UrlTable
+      Events:
+        CreateUrl:
+          Type: Api
+          Properties:
+            Path: /shorten
+            Method: post
+
+  RedirectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      CodeUri: src/redirect/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: UrlTable
+      Environment:
+        Variables:
+          TABLE_NAME: UrlTable
+      Events:
+        Redirect:
+          Type: Api
+          Properties:
+            Path: /{shortId}
+            Method: get
