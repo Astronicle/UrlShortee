@@ -20,7 +20,7 @@ Resources:
     Properties:
       Handler: app.lambda_handler
       Runtime: python3.12
-      CodeUri: src/create_url/
+      CodeUri: src/create-url/
       Policies:
         - DynamoDBCrudPolicy:
             TableName: UrlTable
@@ -52,3 +52,8 @@ Resources:
           Properties:
             Path: /{shortId}
             Method: get
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
