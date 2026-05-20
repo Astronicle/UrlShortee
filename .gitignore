@@ -1,0 +1,14 @@
+# SAM build artifacts
+.aws-sam/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+
+# VS Code settings
+.vscode/
+
+devNotes.txt
